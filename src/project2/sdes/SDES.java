@@ -2,6 +2,11 @@ package project2.sdes;
 
 import java.util.Scanner;
 
+/** Simple DES.
+ * 
+ * @author James A. Donnell Jr.
+ * @author Danielle Lopez
+ * @author Spencer Escalante */
 public class SDES {
 
 	/** 4-bit permutation. */
@@ -107,19 +112,35 @@ public class SDES {
 		boolean[] k_xor_ep = xor(k, epx);
 		
 		boolean[] s0 = sBox0(lh(k_xor_ep));
-		boolean[] s1 = sBox1(lh(k_xor_ep));
+		boolean[] s1 = sBox1(rh(k_xor_ep));
 		
 		return expPerm(concat(s0, s1), p4);
 	}
 
-	private boolean[] sBox0(boolean[] inp) {
-		// TODO Auto-generated method stub
-		return null;
+	/** S-Box 0 as defined on page 330.
+	 * Derived by boolean expression simplification utilizing a Karnaugh Map.
+	 * y1 = x1'x2'x4 + x1'x2x4' + x1x3'x4 + x1x3x4' + x1x2x4
+	 * y2 = x1'x3' + x2x3'x4 + x1x2x4' + x1x2'x4
+	 * @param x 4-bit array.
+	 * @return boolean[] */
+	public static boolean[] sBox0(boolean[] x) {
+		boolean[] result = new boolean[2];
+		result[0] = (!x[0]&!x[1]&x[3]) | (!x[0]&x[1]&!x[3]) | (x[0]&!x[2]&x[3]) | (x[0]&x[2]&!x[3]) | (x[0]&x[1]&x[3]);
+		result[1] = (!x[0]&!x[2]) | (x[1]&!x[2]&x[3]) | (x[0]&x[1]&!x[3]) | (x[0]&!x[1]&x[3]);
+		return result;
 	}
 
-	private boolean[] sBox1(boolean[] inp) {
-		// TODO Auto-generated method stub
-		return null;
+	/** S-Box 1 as defined on page 330.
+	 * Derived by boolean expression simplification utilizing a Karnaugh Map.
+	 * y1 = x2'x3'x4 + x1'x2x4' + x2x3x4 + x1x2'x3'
+	 * y2 = x1'x3x4' + x1'x2x4 + x1x3'x4' + x1x3x4
+	 * @param x 4-bit array.
+	 * @return boolean[] */
+	public static boolean[] sBox1(boolean[] x) {
+		boolean[] result = new boolean[2];
+		result[0] = (!x[1]&!x[2]&x[3]) | (!x[0]&x[1]&!x[3]) | (x[1]&x[2]&x[3]) | (x[0]&!x[1]&!x[2]);
+		result[1] = (!x[0]&x[2]&!x[3]) | (!x[0]&x[1]&x[3]) | (x[0]&!x[2]&!x[3]) | (x[0]&x[2]&x[3]);
+		return result;
 	}
 
 	/** Get a 10 bit key from the keyboard, such as 1010101010.
