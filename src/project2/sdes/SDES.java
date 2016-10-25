@@ -4,6 +4,11 @@ import java.util.Scanner;
 
 public class SDES {
 
+	/** 4-bit permutation. */
+	private static int[] p4 = {1, 3, 2, 0};
+	/** 4-bit Expansion permutation. */
+	private static int[] expansionPermutation = {3, 0, 1, 2, 1, 2, 3, 0};
+	
 	/** Convert the given bit array to a single byte.
 	 * @param inp A bit array, max length is 8 bits.
 	 * @return byte */
@@ -87,8 +92,9 @@ public class SDES {
 	 * @param k k input.
 	 * @return boolean[] */
 	public boolean[] f(boolean[] x, boolean[] k) {
-		// TODO: Part 3
-		return null;
+		boolean[] rhx = rh(x);
+		boolean[] lh = xor(lh(x), feistel(k, rhx));
+		return concat(lh, rhx);
 	}
 
 	/** F(k,x) is a Feistel function.
@@ -97,7 +103,22 @@ public class SDES {
 	 * @param x x input.
 	 * @return boolean[] */
 	public boolean[] feistel(boolean[] k, boolean[] x) {
-		// TODO: Part 3
+		boolean[] epx = expPerm(x, expansionPermutation);
+		boolean[] k_xor_ep = xor(k, epx);
+		
+		boolean[] s0 = sBox0(lh(k_xor_ep));
+		boolean[] s1 = sBox1(lh(k_xor_ep));
+		
+		return expPerm(concat(s0, s1), p4);
+	}
+
+	private boolean[] sBox0(boolean[] inp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean[] sBox1(boolean[] inp) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
